@@ -1,0 +1,14 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' https: data:; connect-src 'self' https://*.googleapis.com wss://*.firebaseio.com; frame-src https://*.firebaseapp.com https://accounts.google.com; object-src 'none'; base-uri 'none'; form-action 'self'"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><title>Study · Topper Ki Tayari</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="style.css"></head>
+<body class="solo"><div id="prog"></div>
+<main>
+<header><a class="btn" href="index.html">← Home</a><span class="crumbs" id="crumbs"></span></header>
+<div class="ad-slot" data-slot="top">Advertisement</div>
+<section id="listV"><h1 id="pt"></h1><p class="sub">Pick a type, search, and start learning.</p><div class="pills" id="pills"></div>
+<div class="tools"><input id="qs" placeholder="Search by title" maxlength="60" aria-label="Search"><select id="cs" aria-label="Class"></select><select id="so" aria-label="Sort"><option value="new">Newest</option><option value="old">Oldest</option><option value="az">A to Z</option></select></div>
+<div class="grid" id="sg"></div></section>
+<section id="itemV" hidden></section>
+<div class="ad-slot" data-slot="bottom">Advertisement</div>
+</main>
+<div class="timer" id="tm" hidden></div>
+<script type="module" src="study.js"></script><script type="module" src="fx.js"></script></body></html>
