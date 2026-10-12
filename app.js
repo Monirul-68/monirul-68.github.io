@@ -40,22 +40,32 @@ $('tSubmit').onclick=submit;$('tClose').onclick=()=>{clearInterval(timer);$('tes
 async function board(){if(!user)return put($('lb'),'Log in to see the leaderboard.');
  try{const s=await getDocs(query(collection(db,'results'),orderBy('score','desc'),limit(15)));let i=0;
  put($('lb'),s.empty?'No scores yet.':s.docs.map(d=>{const r=d.data(),m=['🥇','🥈','🥉'][i]||'#'+(i+1);i++;return h('div',{class:'lb'},h('span',{},`${m} ${r.name||'Student'} · ${r.testTitle||''}`),h('b',{class:'tag'},`${r.score}/${r.total}`))}))}catch{put($('lb'),'Could not load scores.')}}
-async function xp(){if(!user)return;try{const s=await getDocs(query(collection(db,'results'),where('userId','==',user.uid)));let x=0,p=false;s.forEach(d=>{const r=d.data();x+=(r.score||0)*10;if(r.total&&r.score===r.total)p=true});stats={x,n:s.size,perfect:p};$('sXP').textContent=x;paint()}catch{}}
+async function xp(){if(!user)return;try{const s=await getDocs(query(collection(db,'results'),where('userId','==',user.uid)));let x=0,p=false,b=0;s.forEach(d=>{const r=d.data();x+=(r.score||0)*10;if(r.total){if(r.score===r.total)p=true;b=Math.max(b,Math.round(r.score/r.total*100))}});stats={x,n:s.size,perfect:p,best:b};$('sXP').textContent=x;paint()}catch{}}
 
 // ===== Motivation: level, streak, badges, daily tip, continue card =====
-let streak=0,stats={x:0,n:0,perfect:false};
+let streak=0,stats={x:0,n:0,perfect:false,best:0},custom=[];
 const LV=[[0,'🌱','Beginner'],[100,'📘','Learner'],[300,'⭐','Achiever'],[600,'🎓','Scholar'],[1000,'🏆','Champion'],[2000,'👑','Topper']];
-const BD=[['🚀','First test',s=>s.n>=1],['📚','5 tests done',s=>s.n>=5],['💯','Perfect score',s=>s.perfect],['⚡','500 XP',s=>s.x>=500],['🔥','3-day streak',()=>streak>=3],['🌟','7-day streak',()=>streak>=7]];
+const BD=[['🚀','First test','tests',1],['📚','5 tests done','tests',5],['💯','Perfect score','perfect',0],['⚡','500 XP','xp',500],['🔥','3-day streak','streak',3],['🌟','7-day streak','streak',7]].map(([icon,name,rule,value])=>({icon,name,rule,value}));
+const req=b=>({tests:`Complete ${b.value} test${b.value===1?'':'s'}`,xp:`Reach ${b.value} XP`,streak:`${b.value}-day streak`,perfect:'Score 100% on a test',best:`Score ${b.value}% or more`})[b.rule]||'';
+const have=(b,s)=>({tests:s.n>=b.value,xp:s.x>=b.value,streak:streak>=b.value,perfect:s.perfect,best:s.best>=b.value})[b.rule]||false;
 const TIPS=['Study in 25-minute focus blocks, then take a 5-minute break.','Revise yesterday\'s topic for 10 minutes before starting a new one.','One mock test teaches more than reading three chapters passively.','Sleep well. Your brain stores what you learned while you rest.','Write answers by hand once a week to improve speed and memory.','Start with your weakest subject while your mind is fresh.','Small progress every day beats one big push each month.','Explain a topic aloud as if teaching a friend. Gaps show up fast.','Keep your phone away and a water bottle close while studying.','Review your wrong answers. That is where your marks are hiding.'];
 function paint(){if(!$('lvName'))return;const x=stats.x;let i=0;LV.forEach((l,k)=>{if(x>=l[0])i=k});const cur=LV[i],nx=LV[i+1];
  $('lvName').textContent=`${cur[1]} ${cur[2]}`;$('xpFill').style.width=(nx?Math.round((x-cur[0])/(nx[0]-cur[0])*100):100)+'%';
  $('lvNote').textContent=nx?`${nx[0]-x} XP to reach ${nx[1]} ${nx[2]}. Every correct answer gives 10 XP.`:'Top level reached. You are a Topper!';
  $('stk').textContent=`🔥 ${streak} day streak`;
- put($('badges'),BD.map(([e,n,f])=>h('div',{class:'badge'+(f(stats)?' on':'')},h('span',{},e),h('small',{},n))))}
+ put($('badges'),[...BD,...custom].map(b=>{const on=have(b,stats);return h('div',{class:'badge'+(on?' on':''),title:b.desc||req(b)},h('span',{},b.icon),h('small',{},b.name),on?null:h('small',{class:'req'},req(b)))}))}
 $('tip').textContent=TIPS[Math.floor(Date.now()/864e5)%TIPS.length];
 try{const l=JSON.parse(localStorage.getItem('tkt_last')||'null');if(l&&CLASSES.includes(l.c)&&['mock','longqa','article'].includes(l.t)&&typeof l.id==='string'&&typeof l.title==='string')
  put($('cont'),h('a',{class:'card tile cont',href:`study.html?c=${l.c}&t=${l.t}#${encodeURIComponent(l.id)}`},h('b',{class:'tag'},'▶ Continue where you left off'),h('h3',{},l.title.slice(0,120))))}catch{}
 paint();
+getDocs(query(collection(db,'badges'),limit(50))).then(s=>{custom=s.docs.map(d=>d.data()).filter(b=>typeof b.icon==='string'&&typeof b.name==='string'&&typeof b.value==='number');paint()}).catch(()=>{});
+// Daily goal + exam countdown (stored in this browser only)
+const day=()=>new Date().toLocaleDateString('en-CA');
+try{const g=JSON.parse(localStorage.getItem('tkt_day')||'null'),n=g&&g.d===day()?+g.n||0:0;$('gTxt').textContent=n>=1?'Goal reached today! Great work 🎉':'Finish 1 test or read 1 article today.';$('gFill').style.width=Math.min(100,n*100)+'%'}catch{}
+const ex=$('exD');try{ex.value=localStorage.getItem('tkt_exam')||''}catch{}
+function exam(){const v=ex.value;if(!v)return $('exT').textContent='Pick your exam date.';const d=Math.ceil((new Date(v+'T00:00:00')-new Date(day()+'T00:00:00'))/864e5);
+ $('exT').textContent=d>1?`${d} days left. Study a little every day!`:d===1?'Exam is tomorrow. Revise and sleep well!':d===0?'Exam day. Good luck! 🍀':'This date has passed. Pick a new one.'}
+ex.onchange=()=>{try{localStorage.setItem('tkt_exam',ex.value)}catch{}exam()};exam();
 
 // Weekly streak (stored only in this browser)
 (function(){const K='tkt_streak',ds=d=>d.toLocaleDateString('en-CA');let v=[];try{v=JSON.parse(localStorage.getItem(K)||'[]')}catch{}

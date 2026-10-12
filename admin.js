@@ -7,7 +7,7 @@ $('login').onclick=()=>au.signInWithPopup(auth,provider).catch(()=>$('gMsg').tex
 $('logout').onclick=()=>au.signOut(auth).then(()=>location.reload());
 au.onAuthStateChanged(auth,u=>{if(u&&u.email===ADMIN&&u.emailVerified){$('gate').hidden=true;$('app').hidden=false;$('who').textContent=u.email;dash();return}
  if(u){$('gMsg').textContent='This account is not an admin.';au.signOut(auth)}});
-$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{$('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));for(const s of['dash','stu','man','add'])$(s).hidden=s!==b.dataset.t;({dash,stu:loadStu,man:list}[b.dataset.t]||(()=>{}))()});
+$('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{$('tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));for(const s of['dash','stu','man','add','bdg'])$(s).hidden=s!==b.dataset.t;({dash,stu:loadStu,man:list,bdg:blist}[b.dataset.t]||(()=>{}))()});
 for(const id of['cC','eC'])$(id).append(...CLASSES.map(c=>h('option',{value:c},'Class '+c)));
 $('cT').onchange=()=>{const m=$('cT').value==='mock';$('mockA').hidden=!m;$('artA').hidden=m};
 
@@ -44,3 +44,13 @@ $('pub').onclick=async()=>{const m=$('pMsg'),type=$('cT').value,title=$('cN').va
  if(type==='mock'){d.questions=qRows.filter(r=>r.q.value.trim()).map(r=>({question:r.q.value.trim(),A:r.o[0].value,B:r.o[1].value,C:r.o[2].value,D:r.o[3].value,ans:r.a.value}));if(!d.questions.length)return m.textContent='Add at least one question.';d.time=Math.max(1,Math.min(180,+$('cM').value||30))}
  else d.content=$('cB').value;
  try{editing?await updateDoc(doc(db,'contents',editing),d):await addDoc(collection(db,'contents'),d);m.className='msg ok';m.textContent=editing?'Updated.':'Published.';editing=null}catch{m.textContent='Could not publish. Check that you are signed in as admin.'}};
+
+// Badges (shown to students on the home page; see the badges rule in firestore.rules)
+const RL={tests:'tests done ≥',xp:'XP ≥',streak:'day streak ≥',best:'best score % ≥',perfect:'perfect score'};
+$('bR').onchange=()=>{const p=$('bR').value==='perfect';$('bV').hidden=p;$('bVL').hidden=p};
+async function blist(){const f=await getDocs(query(collection(db,'badges'),limit(100)));
+ put($('bList'),f.empty?'No custom badges yet.':f.docs.map(d=>{const b=d.data();return h('div',{class:'lb'},h('span',{},`${b.icon} ${b.name} · ${RL[b.rule]||b.rule}${b.rule==='perfect'?'':' '+b.value}`),h('button',{class:'btn bad',on:{click:async()=>{if(confirm('Delete this badge?')){await deleteDoc(doc(db,'badges',d.id));blist()}}}},'Delete'))}))}
+$('bAdd').onclick=async()=>{const m=$('bMsg'),icon=$('bI').value.trim(),name=$('bN').value.trim(),rule=$('bR').value,value=rule==='perfect'?0:Math.max(0,Math.min(100000,parseInt($('bV').value,10)||0));m.className='msg';
+ if(!icon||!name)return m.textContent='Add an emoji and a name.';
+ try{await addDoc(collection(db,'badges'),{icon,name,desc:$('bD').value.trim(),rule,value,createdAt:serverTimestamp()});m.className='msg ok';m.textContent='Badge added.';['bI','bN','bD'].forEach(i=>$(i).value='');blist()}
+ catch{m.textContent='Could not add. Publish the new Firestore rules first.'}};

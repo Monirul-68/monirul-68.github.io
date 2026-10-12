@@ -4,7 +4,7 @@
 <div class="panel" id="gate" style="max-width:420px;margin:12vh auto;text-align:center"><h1>Admin <em>console</em></h1><p class="sub">Sign in with the admin Google account.</p><button class="btn go" id="login">Sign in with Google</button><p class="msg" id="gMsg"></p></div>
 <div id="app" hidden>
 <header><h2 class="logo" style="padding:0">⚡ Topper Ki Tayari · Admin</h2><div class="row"><span class="note" id="who"></span><button class="btn bad" id="logout">Log out</button></div></header>
-<div class="row" id="tabs"><button class="btn on" data-t="dash">📊 Dashboard</button><button class="btn" data-t="stu">👥 Students</button><button class="btn" data-t="man">📝 Content</button><button class="btn" data-t="add">➕ Add or edit</button></div>
+<div class="row" id="tabs"><button class="btn on" data-t="dash">📊 Dashboard</button><button class="btn" data-t="stu">👥 Students</button><button class="btn" data-t="man">📝 Content</button><button class="btn" data-t="add">➕ Add or edit</button><button class="btn" data-t="bdg">🏅 Badges</button></div>
 <section id="dash" class="panel" style="margin-top:16px"><div class="stats"><div class="stat"><b id="dLive">–</b><span>Online now</span></div><div class="stat"><b id="dStu">–</b><span>Students</span></div><div class="stat"><b id="dCon">–</b><span>Content items</span></div><div class="stat"><b id="dRes">–</b><span>Tests taken</span></div></div></section>
 <section id="stu" class="panel" hidden style="margin-top:16px"><input id="search" placeholder="Search name, email or school" maxlength="60" style="max-width:320px"><div class="scroll" style="margin-top:12px"><table><thead><tr><th>Name</th><th>Class</th><th>School</th><th>Phone</th><th>Status</th><th></th></tr></thead><tbody id="rows"></tbody></table></div></section>
 <section id="man" class="panel" hidden style="margin-top:16px"><div id="list"></div></section>
@@ -13,6 +13,11 @@
 <div id="mockA"><div id="qs"></div><button class="btn" id="addQ" style="margin-top:12px">+ Add question</button><label for="cM">Time (minutes)</label><input id="cM" type="number" min="1" max="180" value="30"></div>
 <div id="artA" hidden><label for="cB">Content</label><textarea id="cB" rows="10" maxlength="20000"></textarea></div>
 <button class="btn go" id="pub" style="margin-top:16px">Publish</button><p class="msg" id="pMsg"></p></section>
+<section id="bdg" class="panel" hidden style="margin-top:16px"><h3>Add a badge</h3>
+<label for="bI">Emoji</label><input id="bI" maxlength="8" placeholder="🏆" style="max-width:120px"><label for="bN">Badge name</label><input id="bN" maxlength="30"><label for="bD">Description (optional)</label><input id="bD" maxlength="80">
+<label for="bR">Earned when the student has…</label><select id="bR"><option value="tests">Completed this many tests</option><option value="xp">This much XP</option><option value="streak">This many days of streak</option><option value="best">Best score % at least</option><option value="perfect">A perfect score (100%)</option></select>
+<label for="bV" id="bVL">Number</label><input id="bV" type="number" min="0" max="100000" value="10">
+<button class="btn go" id="bAdd" style="margin-top:14px">Add badge</button><p class="msg" id="bMsg"></p><h3 style="margin-top:18px">Your custom badges</h3><div id="bList"></div></section>
 </div></main>
 <dialog id="eD"><h2>Edit student</h2><label for="eN">Name</label><input id="eN" maxlength="60"><label for="eC">Class</label><select id="eC"></select><label for="eS">School</label><input id="eS" maxlength="80"><label for="eP">Phone</label><input id="eP" maxlength="15"><label for="eG">Goal</label><input id="eG" maxlength="120">
 <div class="row" style="margin-top:14px"><button class="btn go" id="eSave">Save changes</button><button class="btn" id="eClose">Close</button></div><p class="msg" id="eMsg"></p></dialog>

@@ -156,3 +156,4 @@ a.card{display:block;text-decoration:none;color:inherit}
 .badge span{font-size:28px}.badge small{color:var(--m);font-size:12px}
 .badge.on{opacity:1;filter:none;border-color:#8b5cf688;background:#8b5cf61a;box-shadow:0 0 20px #8b5cf633}
 .cont{margin-bottom:14px}.cont h3{margin-top:4px}
+.badge .req{opacity:.8;font-size:11px}
