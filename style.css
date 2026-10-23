@@ -217,3 +217,17 @@ input:focus,select:focus,textarea:focus{border-color:var(--c);box-shadow:0 0 0 3
 #dash .stat::after{position:absolute;right:12px;top:6px;font-size:48px;opacity:.16}
 #dash .stat:nth-child(1)::after{content:"🟢"}#dash .stat:nth-child(2)::after{content:"👥"}#dash .stat:nth-child(3)::after{content:"📚"}#dash .stat:nth-child(4)::after{content:"⚡"}
 .scroll{max-height:62vh;border-radius:12px}th{position:sticky;top:0;background:#0d1024}
+
+/* ===== v4: UI/UX Pro Max pass (44px targets, visible focus, SVG icons, carousel controls) ===== */
+button,a,select,[role=button]{cursor:pointer}
+.btn{min-height:44px}
+:focus-visible{outline:3px solid var(--c);outline-offset:3px}
+[data-i]{display:inline-flex;vertical-align:-3px;margin-right:8px}
+[data-i] svg,.s-b svg{width:1.15em;height:1.15em}
+.em svg{width:36px;height:36px;color:var(--c);filter:drop-shadow(0 0 10px #00f2ff66)}
+.s-slide .em svg{width:44px;height:44px}.bento .big .em svg{width:68px;height:68px}
+.s-ctl{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:12px}
+.s-b{all:unset;box-sizing:border-box;width:44px;height:44px;display:grid;place-items:center;border:1px solid var(--b);border-radius:50%;background:#ffffff0d;color:var(--t);cursor:pointer;transition:.2s}
+.s-b:hover{border-color:var(--c);color:var(--c)}.s-b:focus-visible{outline:3px solid var(--c);outline-offset:3px}
+.s-dots{margin:0 0 0 8px}.s-dots button{position:relative}.s-dots button::after{content:"";position:absolute;inset:-18px -5px}
+.ad-slot{color:var(--m);border-color:#ffffff40}
