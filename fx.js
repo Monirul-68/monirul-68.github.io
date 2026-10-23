@@ -48,3 +48,15 @@ const rot=document.getElementById('rot');
 if(rot&&!RM){const W=['with confidence','like a Topper','without stress','faster','every single day'];let k=0;setInterval(()=>{rot.classList.add('out');setTimeout(()=>{rot.textContent=W[++k%W.length];rot.classList.remove('out')},350)},2600)}
 document.getElementById('cta')?.addEventListener('click',()=>document.querySelector('#nav [data-t=study]').click());
 document.getElementById('cta2')?.addEventListener('click',()=>document.querySelector('#nav [data-t=board]').click());
+
+// ===== v3: auto-sliding, swipeable feature slider =====
+const sl=document.getElementById('sl');
+if(sl){const S=[['⚡','Timed mock tests','Real exam pressure with an instant score and answer review.'],['📝','Long Q&A','Detailed answers for deep revision before the exam.'],['📄','Easy notes','Short, readable guides for every class from 5 to 12.'],['🔥','Daily streaks','Study a little every day and unlock new badges.'],['🏆','Leaderboard','See where you stand against other toppers.']];
+ const tr=document.createElement('div'),dots=document.createElement('div');tr.className='s-track';dots.className='s-dots';let cur=0,hov=false;
+ const go=i=>{cur=(i+S.length)%S.length;tr.scrollTo({left:cur*tr.clientWidth,behavior:RM?'auto':'smooth'})};
+ S.forEach(([e,t,d],i)=>{const s=document.createElement('div'),a=document.createElement('span'),h=document.createElement('h3'),p=document.createElement('p'),b=document.createElement('button');
+  s.className='s-slide';a.className='em';a.textContent=e;h.textContent=t;p.textContent=d;s.append(a,h,p);tr.append(s);b.setAttribute('aria-label','Slide '+(i+1));b.onclick=()=>go(i);dots.append(b)});
+ sl.append(tr,dots);
+ tr.addEventListener('scroll',()=>{cur=Math.round(tr.scrollLeft/Math.max(1,tr.clientWidth));[...dots.children].forEach((b,i)=>b.classList.toggle('on',i===cur))},{passive:true});
+ tr.dispatchEvent(new Event('scroll'));sl.onpointerenter=()=>hov=true;sl.onpointerleave=()=>hov=false;
+ if(!RM)setInterval(()=>{if(!hov&&!document.hidden)go(cur+1)},4200)}
