@@ -36,3 +36,15 @@ if(it){let seen=false;try{seen=sessionStorage.getItem('tkt_intro')}catch{}
  else{try{sessionStorage.setItem('tkt_intro','1')}catch{}
   it.addEventListener('animationend',e=>{if(e.animationName==='introOut')it.remove()});
   setTimeout(()=>it.remove(),3500)}}
+
+// ===== v2: cursor glow, 3D tilt, button ripple, rotating headline, CTA buttons =====
+if(!RM&&matchMedia('(hover:hover)').matches){const cu=document.createElement('div');cu.id='cur';document.body.append(cu);
+ addEventListener('pointermove',e=>{cu.style.transform=`translate(${e.clientX}px,${e.clientY}px)`;const t=e.target.closest?.('.tile,.stat,.badge,.card');if(!t)return;const r=t.getBoundingClientRect();
+  t.style.setProperty('--rx',((e.clientY-r.top)/r.height-.5)*-9+'deg');t.style.setProperty('--ry',((e.clientX-r.left)/r.width-.5)*9+'deg');t.classList.add('tilt')},{passive:true});
+ document.addEventListener('pointerout',e=>{const t=e.target.closest?.('.tilt');if(t&&!t.contains(e.relatedTarget))t.classList.remove('tilt')})}
+document.addEventListener('pointerdown',e=>{const b=e.target.closest?.('.btn');if(!b||RM)return;const r=b.getBoundingClientRect(),s=Math.max(r.width,r.height),i=document.createElement('i');i.className='rip';
+ i.style.cssText=`width:${s}px;height:${s}px;left:${e.clientX-r.left-s/2}px;top:${e.clientY-r.top-s/2}px`;b.append(i);setTimeout(()=>i.remove(),650)});
+const rot=document.getElementById('rot');
+if(rot&&!RM){const W=['with confidence','like a Topper','without stress','faster','every single day'];let k=0;setInterval(()=>{rot.classList.add('out');setTimeout(()=>{rot.textContent=W[++k%W.length];rot.classList.remove('out')},350)},2600)}
+document.getElementById('cta')?.addEventListener('click',()=>document.querySelector('#nav [data-t=study]').click());
+document.getElementById('cta2')?.addEventListener('click',()=>document.querySelector('#nav [data-t=board]').click());

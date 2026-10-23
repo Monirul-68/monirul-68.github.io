@@ -37,11 +37,11 @@ function item(d){const t=TY[d.type]||['',''],v=$('itemV');document.title=(d.titl
  const dn=d.type==='mock'?null:h('button',{class:'btn',on:{click:()=>{if(done.has(d.id))done.delete(d.id);else{done.add(d.id);confetti(70);bump()}sv('tkt_done',[...done]);dn.textContent=done.has(d.id)?'✓ Completed':'Mark as completed'}}},done.has(d.id)?'✓ Completed':'Mark as completed');
  const head=[h('button',{class:'btn',on:{click:()=>{location.hash=''}}},'← Back to list'),h('h1',{style:'margin-top:16px'},d.title||''),h('p',{class:'meta'},`${t[1]} · Class ${cls} · ${mins(d)}`),h('div',{class:'row',style:'margin:10px 0'},sb,dn),ad('top2')];
  if(d.type!=='mock')return put(v,head,h('div',{class:'read panel'},d.content||''),ad('end'));
- let ans={},done=false,s=Math.max(1,Math.min(180,+d.time||30))*60;const tm=$('tm'),total=(d.questions||[]).length;
+ let ans={},fin=false,s=Math.max(1,Math.min(180,+d.time||30))*60;const tm=$('tm'),total=(d.questions||[]).length;
  const qs=(d.questions||[]).map((x,i)=>h('div',{class:'panel q'},h('b',{class:'tag'},'Question '+(i+1)),h('p',{style:'margin:8px 0;font-weight:600'},x.question),
-  ...['A','B','C','D'].map(k=>h('button',{class:'opt','data-k':k,on:{click:e=>{if(done)return;ans[i]=k;e.currentTarget.parentElement.querySelectorAll('.opt').forEach(o=>o.classList.toggle('sel',o===e.currentTarget))}}},x[k]))));
+  ...['A','B','C','D'].map(k=>h('button',{class:'opt','data-k':k,on:{click:e=>{if(fin)return;ans[i]=k;e.currentTarget.parentElement.querySelectorAll('.opt').forEach(o=>o.classList.toggle('sel',o===e.currentTarget))}}},x[k]))));
  const res=h('div',{class:'panel',hidden:'hidden'}),sub=h('button',{class:'btn go',on:{click:finish}},'Submit test');
- async function finish(){if(done)return;done=true;clearInterval(timer);sub.disabled=true;tm.hidden=true;
+ async function finish(){if(fin)return;fin=true;clearInterval(timer);sub.disabled=true;tm.hidden=true;
   const score=d.questions.filter((x,i)=>ans[i]===x.ans).length;
   qs.forEach((p,i)=>p.querySelectorAll('.opt').forEach(o=>{o.disabled=true;if(o.dataset.k===d.questions[i].ans)o.classList.add('ok');else if(o.dataset.k===ans[i])o.classList.add('bad')}));
   const pc=Math.round(score/Math.max(total,1)*100);done.add(d.id);sv('tkt_done',[...done]);bump();if(pc>=80)confetti();put(res,h('div',{class:'score'},`${score}/${total}`),h('p',{style:'font-weight:600;margin:6px 0'},pc>=80?'Outstanding! 🎉':pc>=50?'Good job. Keep practising!':'Keep going. Review the red answers and try again.'),h('p',{class:'note'},`${pc}% correct. Green is the right answer, red is your wrong pick.`));res.hidden=false;res.scrollIntoView({behavior:'smooth',block:'center'});
