@@ -12,7 +12,7 @@ const ls=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return 
 const saved=new Set(ls('tkt_saved',[])),done=new Set(ls('tkt_done',[]));
 const bump=()=>{const t=new Date().toLocaleDateString('en-CA'),g=ls('tkt_day',null);sv('tkt_day',{d:t,n:g&&g.d===t?(+g.n||0)+1:1})};
 function confetti(n=130){if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;const c=h('canvas',{style:'position:fixed;inset:0;pointer-events:none;z-index:200'}),g=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;document.body.append(c);
- const cl=['#00f2ff','#8b5cf6','#00ff9d','#ffd166','#ff5c7a'],P=Array.from({length:n},()=>({x:innerWidth/2,y:innerHeight*.6,vx:(Math.random()-.5)*14,vy:-Math.random()*14-4,r:Math.random()*6+3,c:cl[Math.random()*5|0],a:1}));
+ const cl=['#ffbf47','#7c5cff','#2ee6a6','#ff5d73','#ffffff'],P=Array.from({length:n},()=>({x:innerWidth/2,y:innerHeight*.6,vx:(Math.random()-.5)*14,vy:-Math.random()*14-4,r:Math.random()*6+3,c:cl[Math.random()*5|0],a:1}));
  (function f(){g.clearRect(0,0,c.width,c.height);let k=0;for(const p of P){p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.a-=.008;if(p.a>0){k++;g.globalAlpha=p.a;g.fillStyle=p.c;g.fillRect(p.x,p.y,p.r,p.r*.6)}}k?requestAnimationFrame(f):c.remove()})()}
 addEventListener('scroll',()=>{const m=document.documentElement;$('prog').style.width=scrollY/Math.max(1,m.scrollHeight-innerHeight)*100+'%'},{passive:true});
 $('cs').append(...CLASSES.map(c=>h('option',{value:c},'Class '+c)));$('cs').value=cls;
